@@ -1,0 +1,56 @@
+﻿@model WebLoggR.Models.Application
+
+@{
+    ViewBag.Title = "Edit";
+}
+<div data-bind="with: app">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="row-fluid">
+                <div class="span6 offset3">
+                    <form method="post" action="/Apps/Edit">
+                        <fieldset>
+                            <legend data-bind="text: 'Editing ' + name()"></legend>
+                            <div class="control-group">
+                                <label>Application Name: </label>
+                                <input type="text" class="block-level-input" name="Name" data-bind="value: name" />
+                            </div>
+                            <div class="control-group">
+                                <button class="btn btn-primary" type="submit" data-bind="click: $root.save" value="Save">Save</button>
+                                <input type="hidden" name="ID" data-bind="vaule: id" />
+                                <input type="hidden" name="ApiKey" data-bind="value: apiKey" />
+                            </div>
+                            <div class="control-group">
+                                @Html.ActionLink("Back to List", "Account", "Home")
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/models.js"></script>
+<script type="text/javascript">
+    function viewModel() {
+        var self = this;
+
+        self.app = ko.observable(new application("@Model.Name", "@Model.ID", "@Model.ApiKey"));
+
+        self.save = function () {
+            $.ajax({
+                url: "/Apps/Edit",
+                type: "post",
+                data: ko.toJSON(self.app()),
+                contentType: "application/json",
+                success: function (result) {
+                    location.href = "/Home";
+                    
+                }
+            });
+        }
+    }
+    ko.applyBindings(new viewModel());
+</script>

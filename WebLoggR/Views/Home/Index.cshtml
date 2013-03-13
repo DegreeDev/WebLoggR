@@ -1,45 +1,141 @@
-﻿@{
-    ViewBag.Title = "Home Page";
-}
-@section featured {
-    <section class="featured">
-        <div class="content-wrapper">
-            <hgroup class="title">
-                <h1>@ViewBag.Title.</h1>
-                <h2>@ViewBag.Message</h2>
-            </hgroup>
-            <p>
-                To learn more about ASP.NET MVC visit
-                <a href="http://asp.net/mvc" title="ASP.NET MVC Website">http://asp.net/mvc</a>.
-                The page features <mark>videos, tutorials, and samples</mark> to help you get the most from ASP.NET MVC.
-                If you have any questions about ASP.NET MVC visit
-                <a href="http://forums.asp.net/1146.aspx/1?MVC" title="ASP.NET MVC Forum">our forums</a>.
-            </p>
+﻿<div class="row-fluid">
+    <div class="span12">
+        <a href="@Url.Action("Account", "Home")">My Account</a>
+        <a href="@Url.Action("Index", "Home")">Logger</a>
+        <div class="pull-right">
+            <button class="btn">Log In</button>
+            <a class="btn" href="@Url.Action("SignUp", "Home")">Sign Up</a>
+            <span class="btn disabled" data-bind="text: stateText, css: stateCSS"></span>
         </div>
-    </section>
-}
-<h3>We suggest the following:</h3>
-<ol class="round">
-    <li class="one">
-        <h5>Getting Started</h5>
-        ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-        enables a clean separation of concerns and that gives you full control over markup
-        for enjoyable, agile development. ASP.NET MVC includes many features that enable
-        fast, TDD-friendly development for creating sophisticated applications that use
-        the latest web standards.
-        <a href="http://go.microsoft.com/fwlink/?LinkId=245151">Learn more…</a>
-    </li>
+    </div>
+</div>
+<h3>Logging</h3>
+<div class="row-fluid">
+    <div class="span6">
+        <div class="row-fluid">
+            <div class="span12">
+                <select data-bind="value: logLevel">
+                    <option value="log">Log</option>
+                    <option value="warn">Warn</option>
+                    <option value="critical">Critical</option>
+                </select>
+                <select data-bind="options: applications, optionsText: 'name', optionsValue: 'apiKey', value: apiKey">
+                </select>
+                <button class="btn btn-primary" data-bind="click: logIt">Send</button>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <input type="text" class="input-block-level" data-bind="value: title" placeholder="Title..." />
+                <textarea class="input-block-level" data-bind="value: message" placeholder="Exception..."></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="span12">
 
-    <li class="two">
-        <h5>Add NuGet packages and jump-start your coding</h5>
-        NuGet makes it easy to install and update free libraries and tools.
-        <a href="http://go.microsoft.com/fwlink/?LinkId=245153">Learn more…</a>
-    </li>
+        <div id="tabs">
+            <ul data-bind="foreach: applications">
+                <li><a data-bind="attr: { href : '#' + id() }, text: name"></a></li>
+            </ul>
+            <!-- ko foreach: applications -->
+            <div data-bind="attr: { id: id }">
+                <!-- ko foreach: messages -->
+                <div class="well well-small">
+                    <div class="row-fluid">
+                        <div class="span6">
+                            <span class="label" data-bind="text: title, css: typeCSS"></span>
+                        </div>
+                        <div class="span6">
+                            <span class="input-block-level" data-bind="text: time"></span>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <p data-bind="text:message"></p>
+                        </div>
+                    </div>
+                    </div>
+                <!-- /ko -->
+            </div>
+        <!-- /ko -->
+    </div>
+</div>
+<script src="~/Scripts/_references.js"></script>
+<script src="~/Scripts/models.js"></script>
+<script>
+    function viewModel() {
+        var self = this;
 
-    <li class="three">
-        <h5>Find Web Hosting</h5>
-        You can easily find a web hosting company that offers the right mix of features
-        and price for your applications.
-        <a href="http://go.microsoft.com/fwlink/?LinkId=245157">Learn more…</a>
-    </li>
-</ol>
+        self.logLevel = ko.observable("log");
+        self.message = ko.observable();
+        self.title = ko.observable();
+        self.apiKey = ko.observable();
+
+        self.hub = $.connection.greenRHub;
+        self.stateCSS = ko.observable();
+        self.stateText = ko.observable();
+
+        self.applications = ko.observableArray();
+
+        self.hub.client.addApplication = function (apps) {
+            console.log(apps);
+            ko.utils.arrayForEach(apps, function (app) {
+                self.applications.push(new application(app.Name, app.ID, app.ApiKey));
+            });
+
+            $("#tabs").tabs();
+        }
+
+        self.hub.client.log = function (data) {
+
+            var app = ko.utils.arrayFirst(self.applications(), function (app) {
+                console.log("app.apiKey(): " + app.apiKey());
+                console.log("data.apiKey: " + data.apiKey);
+                return app.apiKey() == data.apiKey;
+            });
+
+            console.log(data);
+            app.messages.push(new message(data.title, data.message, data.type, data.time));
+
+            console.log(app.messages());
+
+            //var m = new message(data.name, data.message, data.type, data.time);
+            //self.messages.push(m);
+
+            //if (self.messages().length > 25) {
+            //    self.messages.shift();
+            //}
+        };
+
+
+
+
+        $.connection.hub.start().done(function () {
+            self.hub.server.joinGroup("@ViewBag.AccountId.ToString()");
+        });
+
+        self.logIt = function () {
+            self.hub.server.serverLog(self.apiKey(), self.logLevel(), self.title(), self.message());
+        };
+
+        self.hub.connection.stateChanged(function (change) {
+            if (change.newState === $.signalR.connectionState.reconnecting) {
+                self.stateCSS("btn-warning");
+                self.stateText("Reconnecting...");
+            }
+            else if (change.newState === $.signalR.connectionState.connected) {
+                self.stateCSS("btn-success");
+                self.stateText("Connected");
+            }
+            else if (change.newState === $.signalR.connectionState.disconnected) {
+                self.stateCSS("btn-inverse");
+                self.stateText("Disconnected");
+            }
+        });
+    }
+
+    ko.applyBindings(new viewModel());
+
+</script>

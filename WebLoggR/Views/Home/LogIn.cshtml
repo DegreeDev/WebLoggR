@@ -1,0 +1,25 @@
+﻿@{
+    ViewBag.Title = "LogIn";
+}
+
+<div class="well">
+    <div class="row-fluid">
+        <div class="span6 offset3">
+            <form method="post" action="/Home/Login" class ="inline-form">
+                <fieldset>
+                    <legend>Log In</legend>
+
+                    <div class="control-group">
+                        <label>User Name:</label>
+                        <input type="text" name="user"/>
+                    </div>
+                    <div class="control-group">
+                        <label>Password:</label>
+                        <input type="password" name="password"/>
+                    </div>
+                </fieldset>
+                <input type="submit" class="btn btn-primary" value="Sign Up"/>
+            </form>
+        </div>
+    </div>
+</div>

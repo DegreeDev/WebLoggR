@@ -1,0 +1,22 @@
+﻿@{
+    ViewBag.Title = "AddApplication";
+}
+
+
+<div class="well">
+    <div class="row-fluid">
+        <div class="span6 offset3">
+            <form method="post" action="/Home/AddApplication" class ="inline-form">
+                <fieldset>
+                    <legend>Add New Application</legend>
+
+                    <div class="control-group">
+                        <label>Name:</label>
+                        <input type="text" name="name"/>
+                    </div>
+                </fieldset>
+                <input type="submit" class="btn btn-primary" value="Add"/>
+            </form>
+        </div>
+    </div>
+</div>

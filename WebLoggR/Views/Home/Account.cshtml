@@ -1,0 +1,110 @@
+﻿@{
+    ViewBag.Title = "Account";
+}
+<a href="@Url.Action("Account", "Home")">My Account</a>
+<a href="@Url.Action("Index", "Home")">Logger</a>
+
+<h2>My Account</h2>
+
+<div class="row-fluid">
+    <div class="span6">
+        <div class="well">
+            <h3>Account Options</h3>
+            <ul class="unstyled">
+                <li>
+                    <label class="radio">
+                        <input type="radio" name="accountOption" value="1" />25 Messages ( Not Persisted ) + $0.00  / Application</label></li>
+                <li>
+                    <label class="radio">
+                        <input type="radio" name="accountOption" value="2" />Unlimited Messages ( Not Persisted ) + $0.50  / Application</label></li>
+                <li>
+                    <label class="radio">
+                        <input type="radio" name="accountOption" value="3" />25 Messages ( Stored On Server ) + $1.00  / Application</label></li>
+                <li>
+                   <label class="radio">
+                        <input type="radio" name="accountOption" value="4" />Unlimited Messages ( Stored On Server ) + $2.00  / Application</label></li>
+            </ul>
+        </div>
+    </div>
+    <div class="span6">
+        <div class="well">
+            <h3>Application Pricing</h3>
+            <ul class="unstyled">
+                <li>$2.00 / Month - 1 Application</li>
+                <li>$5.00 / Month - 2-5 Application</li>
+                <li><a href="">Email Me</a> - 5+ Application</li>
+                <li>&nbsp;</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="span12">
+        <a class="btn btn-primary" href="/Home/AddApplication">Add Application</a>
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="span12">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Application Name</th>
+                    <th>Api Key</th>
+                    <th colspan="2">Options</th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: applications">
+                <tr>
+                    <td>
+                        <span data-bind="text:name"></span>
+                    </td>
+                    <td>
+                        <span data-bind="text:apiKey"></span>
+                    </td>
+                    <td>
+                        <a class="btn input-block-level" data-bind="attr : { href: '/Apps/Edit/' + id() } ">Configure</a>
+
+                    </td>
+                    <td>
+                        <button class="btn input-block-level btn-danger">Remove</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script>
+    function application(n, i, a) {
+        var self = this;
+
+        self.name = ko.observable(n);
+        self.id = ko.observable(i);
+        self.apiKey = ko.observable(a);
+    }
+    function viewModel() {
+        var self = this;
+
+        self.applications = ko.observableArray();
+
+        self.hub = $.connection.greenRHub;
+
+        self.hub.client.addApplication = function (apps) {
+            ko.utils.arrayForEach(apps, function (app) {
+                self.applications.push(new application(app.Name, app.ID, app.ApiKey));
+            });
+        };
+
+        $.connection.hub.start().done(function () {
+
+            self.hub.server.joinGroup("@ViewBag.AccountId.ToString()");
+
+        });
+
+        
+    }
+
+    ko.applyBindings(new viewModel());
+</script>

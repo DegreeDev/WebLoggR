@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="GreenRDbModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityContainer Name="GreenRDbModelStoreContainer">
+          <EntitySet Name="Account" EntityType="GreenRDbModel.Store.Account" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Application" EntityType="GreenRDbModel.Store.Application" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Users" EntityType="GreenRDbModel.Store.Users" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="FK_Application_0" Association="GreenRDbModel.Store.FK_Application_0">
+            <End Role="Account" EntitySet="Account" />
+            <End Role="Application" EntitySet="Application" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_0" Association="GreenRDbModel.Store.FK_Users_0">
+            <End Role="Account" EntitySet="Account" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Account">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Application">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="ApiKey" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Account" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Persist" Type="bit" Nullable="false" />
+          <Property Name="MaxMessages" Type="int" Nullable="false" />
+          <Property Name="LastMessageDateTime" Type="datetime2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Password" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Account" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Application_0">
+          <End Role="Account" Type="GreenRDbModel.Store.Account" Multiplicity="1" />
+          <End Role="Application" Type="GreenRDbModel.Store.Application" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Application">
+              <PropertyRef Name="Account" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_0">
+          <End Role="Account" Type="GreenRDbModel.Store.Account" Multiplicity="1" />
+          <End Role="Users" Type="GreenRDbModel.Store.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="Account" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="GreenRDbModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="GreenRDb" p1:LazyLoadingEnabled="true">
+          <EntitySet Name="Accounts" EntityType="GreenRDbModel.Account" />
+          <EntitySet Name="Applications" EntityType="GreenRDbModel.Application" />
+          <EntitySet Name="Users" EntityType="GreenRDbModel.User" />
+          <AssociationSet Name="FK_Application_0" Association="GreenRDbModel.FK_Application_0">
+            <End Role="Account" EntitySet="Accounts" />
+            <End Role="Application" EntitySet="Applications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_0" Association="GreenRDbModel.FK_Users_0">
+            <End Role="Account" EntitySet="Accounts" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Account">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="Applications" Relationship="GreenRDbModel.FK_Application_0" FromRole="Account" ToRole="Application" />
+          <NavigationProperty Name="Users" Relationship="GreenRDbModel.FK_Users_0" FromRole="Account" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="Application">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="ApiKey" Type="Guid" Nullable="false" />
+          <Property Name="Account" Type="Guid" Nullable="false" />
+          <Property Name="Persist" Type="Boolean" Nullable="false" />
+          <Property Name="MaxMessages" Type="Int32" Nullable="false" />
+          <Property Name="LastMessageDateTime" Type="DateTime" Nullable="false" Precision="7" />
+          <NavigationProperty Name="Account1" Relationship="GreenRDbModel.FK_Application_0" FromRole="Application" ToRole="Account" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="Account" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="Account1" Relationship="GreenRDbModel.FK_Users_0" FromRole="Users" ToRole="Account" />
+        </EntityType>
+        <Association Name="FK_Application_0">
+          <End Role="Account" Type="GreenRDbModel.Account" Multiplicity="1" />
+          <End Role="Application" Type="GreenRDbModel.Application" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Application">
+              <PropertyRef Name="Account" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_0">
+          <End Role="Account" Type="GreenRDbModel.Account" Multiplicity="1" />
+          <End Role="Users" Type="GreenRDbModel.User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="Account" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="GreenRDbModelStoreContainer" CdmEntityContainer="GreenRDb">
+          <EntitySetMapping Name="Accounts">
+            <EntityTypeMapping TypeName="GreenRDbModel.Account">
+              <MappingFragment StoreEntitySet="Account">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Applications">
+            <EntityTypeMapping TypeName="GreenRDbModel.Application">
+              <MappingFragment StoreEntitySet="Application">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ApiKey" ColumnName="ApiKey" />
+                <ScalarProperty Name="Account" ColumnName="Account" />
+                <ScalarProperty Name="Persist" ColumnName="Persist" />
+                <ScalarProperty Name="MaxMessages" ColumnName="MaxMessages" />
+                <ScalarProperty Name="LastMessageDateTime" ColumnName="LastMessageDateTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="GreenRDbModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Account" ColumnName="Account" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
