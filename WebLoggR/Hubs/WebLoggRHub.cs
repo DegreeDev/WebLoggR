@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
+using WebLoggR.Code;
 using WebLoggR.Models;
 
 namespace WebLoggR.Hubs
@@ -65,17 +66,16 @@ namespace WebLoggR.Hubs
             }
 
 
-            
-            var result = new
-            {
-                apiKey = app.ApiKey,
-                message,
-                title,
-                type = logLevel,
-                time = DateTime.UtcNow.ToString()
-            };
+            var m1 = MessageManager.Manager;
+            var m2 = MessageManager.Manager;
 
-            await Clients.Group(app.Account.ToString()).log(result);
+            var test = m1 == m2; 
+
+            LogMessage logMessage = MessageManager.Manager.Persist(apiKey, logLevel, title, message, DateTime.UtcNow);
+
+
+
+            await Clients.Group(app.Account.ToString()).log(logMessage);
         }
     }
 }

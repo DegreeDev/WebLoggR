@@ -92,11 +92,11 @@
             var app = ko.utils.arrayFirst(self.applications(), function (app) {
                 console.log("app.apiKey(): " + app.apiKey());
                 console.log("data.apiKey: " + data.apiKey);
-                return app.apiKey() == data.apiKey;
+                return app.apiKey() == data.ApiKey;
             });
 
             console.log(data);
-            app.messages.push(new message(data.title, data.message, data.type, data.time));
+            app.messages.push(new message(data.Title, data.Message, data.LogLevel, data.Time));
 
             console.log(app.messages());
         };
