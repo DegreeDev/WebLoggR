@@ -1,8 +1,6 @@
 ﻿@{
     ViewBag.Title = "Account";
 }
-<a href="@Url.Action("Account", "Home")">My Account</a>
-<a href="@Url.Action("Index", "Home")">Logger</a>
 
 <h2>My Account</h2>
 
@@ -13,26 +11,26 @@
             <ul class="unstyled">
                 <li>
                     <label class="radio">
-                        <input type="radio" name="accountOption" value="1" />25 Messages ( Not Persisted ) + $0.00  / Application</label></li>
+                        <input type="radio" name="accountOption" value="1" />25 Messages ( Not Persisted ) </label></li>
                 <li>
                     <label class="radio">
-                        <input type="radio" name="accountOption" value="2" />Unlimited Messages ( Not Persisted ) + $0.50  / Application</label></li>
+                        <input type="radio" name="accountOption" value="2" />Unlimited Messages ( Not Persisted ) </label></li>
                 <li>
                     <label class="radio">
-                        <input type="radio" name="accountOption" value="3" />25 Messages ( Stored On Server ) + $1.00  / Application</label></li>
+                        <input type="radio" name="accountOption" value="3" />25 Messages ( Cloud Storage ) </label></li>
                 <li>
                    <label class="radio">
-                        <input type="radio" name="accountOption" value="4" />Unlimited Messages ( Stored On Server ) + $2.00  / Application</label></li>
+                        <input type="radio" name="accountOption" value="4" />Unlimited Messages ( Cloud Storage ) </label></li>
             </ul>
         </div>
     </div>
     <div class="span6">
         <div class="well">
-            <h3>Application Pricing</h3>
+            <h3>Application Plans</h3>
             <ul class="unstyled">
-                <li>$2.00 / Month - 1 Application</li>
-                <li>$5.00 / Month - 2-5 Application</li>
-                <li><a href="">Email Me</a> - 5+ Application</li>
+                <li>Plan 1 - 1 Application</li>
+                <li>Plan 2 - 2-5 Application</li>
+                <li>Plan 3 - 5+ Application</li>
                 <li>&nbsp;</li>
             </ul>
         </div>
@@ -87,6 +85,9 @@
     function viewModel() {
         var self = this;
 
+        self.stateCSS = ko.observable();
+        self.stateText = ko.observable();
+
         self.applications = ko.observableArray();
 
         self.hub = $.connection.greenRHub;
@@ -102,7 +103,20 @@
             self.hub.server.joinGroup("@ViewBag.AccountId.ToString()");
 
         });
-
+        self.hub.connection.stateChanged(function (change) {
+            if (change.newState === $.signalR.connectionState.reconnecting) {
+                self.stateCSS("btn-warning");
+                self.stateText("Reconnecting...");
+            }
+            else if (change.newState === $.signalR.connectionState.connected) {
+                self.stateCSS("btn-success");
+                self.stateText("Connected");
+            }
+            else if (change.newState === $.signalR.connectionState.disconnected) {
+                self.stateCSS("btn-inverse");
+                self.stateText("Disconnected");
+            }
+        });
         
     }
 

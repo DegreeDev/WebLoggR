@@ -12,10 +12,10 @@ namespace WebLoggR.Hubs
     [HubName("greenRHub")]
     public class GreenRHub : Hub
     {
-        private GreenRDb _db;
+        private Entities _db;
         public GreenRHub()
         {
-            _db = new GreenRDb();
+            _db = new Entities();
         }
         protected override void Dispose(bool disposing)
         {
@@ -50,6 +50,22 @@ namespace WebLoggR.Hubs
         {
             Application app = _db.Applications.FirstOrDefault(x => x.ApiKey == apiKey);
 
+            try
+            {
+                string x = null;
+
+                string y = x.Substring(0, 100);
+
+            }
+            catch (Exception e)
+            {
+                title = "Tried to perform substring on null string";
+                message = e.Message;
+                message += e.StackTrace;
+            }
+
+
+            
             var result = new
             {
                 apiKey = app.ApiKey,

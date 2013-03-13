@@ -8,7 +8,7 @@
     </div>
 </div>*@
 <h3>Logging</h3>
-@*<div class="row-fluid">
+<div class="row-fluid">
     <div class="span6">
         <div class="row-fluid">
             <div class="span12">
@@ -30,8 +30,8 @@
             </div>
         </div>
     </div>
-</div>*@
-<div class="row-fluid">
+</div>
+@*<div class="row-fluid">
     <div class="span12">
 
         <div id="tabs">
@@ -61,47 +61,47 @@
             <!-- /ko -->
         </div>
     </div>
-</div>
-<script src="~/Scripts/_references.js"></script>
-<script src="~/Scripts/models.js"></script>
-<script>
-    function viewModel() {
-        var self = this;
+</div>*@
+    <script src="~/Scripts/_references.js"></script>
+    <script src="~/Scripts/models.js"></script>
+    <script>
+        function viewModel() {
+            var self = this;
 
-        self.logLevel = ko.observable("log");
-        self.message = ko.observable();
-        self.title = ko.observable();
-        self.apiKey = ko.observable();
+            self.logLevel = ko.observable("log");
+            self.message = ko.observable();
+            self.title = ko.observable();
+            self.apiKey = ko.observable();
 
-        self.hub = $.connection.greenRHub;
-        self.stateCSS = ko.observable();
-        self.stateText = ko.observable();
+            self.hub = $.connection.greenRHub;
+            self.stateCSS = ko.observable();
+            self.stateText = ko.observable();
 
-        self.applications = ko.observableArray();
+            self.applications = ko.observableArray();
 
-        self.hub.client.addApplication = function (apps) {
-            console.log(apps);
-            ko.utils.arrayForEach(apps, function (app) {
-                self.applications.push(new application(app.Name, app.ID, app.ApiKey));
-            });
-            $("#tabs").tabs();
-        }
+            self.hub.client.addApplication = function (apps) {
+                console.log(apps);
+                ko.utils.arrayForEach(apps, function (app) {
+                    self.applications.push(new application(app.Name, app.ID, app.ApiKey));
+                });
+                $("#tabs").tabs();
+            }
 
-        self.hub.client.log = function (data) {
+            self.hub.client.log = function (data) {
 
-            var app = ko.utils.arrayFirst(self.applications(), function (app) {
-                console.log("app.apiKey(): " + app.apiKey());
-                console.log("data.apiKey: " + data.apiKey);
-                return app.apiKey() == data.apiKey;
-            });
+                var app = ko.utils.arrayFirst(self.applications(), function (app) {
+                    console.log("app.apiKey(): " + app.apiKey());
+                    console.log("data.apiKey: " + data.apiKey);
+                    return app.apiKey() == data.apiKey;
+                });
 
-            console.log(data);
-            app.messages.push(new message(data.title, data.message, data.type, data.time));
+                console.log(data);
+                app.messages.push(new message(data.title, data.message, data.type, data.time));
 
-            console.log(app.messages());
-        };
-        $.connection.hub.start().done(function () {
-            self.hub.server.joinGroup("@ViewBag.AccountId.ToString()");
+                console.log(app.messages());
+            };
+            $.connection.hub.start().done(function () {
+                self.hub.server.joinGroup("@ViewBag.AccountId.ToString()");
             });
 
             self.logIt = function () {
@@ -126,4 +126,4 @@
 
         ko.applyBindings(new viewModel());
 
-</script>
+    </script>

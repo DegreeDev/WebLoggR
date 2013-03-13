@@ -9,10 +9,10 @@ namespace WebLoggR.Controllers
 {
     public class AppsController : Controller
     {
-        private GreenRDb _db;
+        private Entities _db;
         public AppsController()
         {
-            _db = new GreenRDb();
+            _db = new Entities();
         }
         protected override void Dispose(bool disposing)
         {

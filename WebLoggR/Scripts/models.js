@@ -7,7 +7,26 @@
     self.time = ko.observable(time);
 
     self.typeCSS = ko.computed(function () {
-        return self.type() == "log" ? "" : self.type() == "warn" ? "label-warning" : "label-important";
+
+        var result = "";
+
+        switch (self.type()) {
+            case "log":
+            default:
+                result = "";
+                break;
+            case "warn":
+                result = "label-warning";
+                break;
+            case "critical":
+                result = "label-important";
+                break;
+            case "success":
+                result = "label-success";
+                break;
+        }
+
+        return result;
     });
 }
 

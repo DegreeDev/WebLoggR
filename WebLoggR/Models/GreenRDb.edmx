@@ -75,7 +75,7 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="GreenRDbModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityContainer Name="GreenRDb" p1:LazyLoadingEnabled="true">
+        <EntityContainer Name="Entities" p1:LazyLoadingEnabled="true">
           <EntitySet Name="Accounts" EntityType="GreenRDbModel.Account" />
           <EntitySet Name="Applications" EntityType="GreenRDbModel.Application" />
           <EntitySet Name="Users" EntityType="GreenRDbModel.User" />
@@ -149,7 +149,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="GreenRDbModelStoreContainer" CdmEntityContainer="GreenRDb">
+        <EntityContainerMapping StorageEntityContainer="GreenRDbModelStoreContainer" CdmEntityContainer="Entities">
           <EntitySetMapping Name="Accounts">
             <EntityTypeMapping TypeName="GreenRDbModel.Account">
               <MappingFragment StoreEntitySet="Account">

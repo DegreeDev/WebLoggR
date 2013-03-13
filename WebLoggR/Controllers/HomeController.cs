@@ -4,16 +4,18 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using WebLoggR.Filters;
 using WebLoggR.Models;
 
 namespace WebLoggR.Controllers
 {
+    [RequireSession]
     public class HomeController : Controller
     {
-        private GreenRDb _db;
+        private WebLoggR.Models.Entities _db;
         public HomeController()
         {
-            _db = new GreenRDb();
+            _db = new Entities();
         }
         protected override void Dispose(bool disposing)
         {
@@ -23,36 +25,37 @@ namespace WebLoggR.Controllers
 
         public ActionResult Index()
         {
-            if (Session["AccountId"] == null)
-            {
-                return RedirectToAction("LogIn", "Home");
-            }
-            else
-            {
-                ViewBag.AccountId = (Guid)Session["AccountId"];
-            }
+            ViewBag.AccountId = (Guid)Session["AccountId"];
+
+            return View();
+        }
+        public ActionResult Tester()
+        {
+            ViewBag.AccountId = (Guid)Session["AccountId"];
 
             return View();
         }
         public ActionResult Account()
         {
-            if (Session["AccountId"] == null)
-            {
-                return RedirectToAction("LogIn", "Home");
-            }
-            else
-            {
-                ViewBag.AccountId = (Guid)Session["AccountId"];
-            }
+            ViewBag.AccountId = (Guid)Session["AccountId"];
+
             return View();
         }
-
+        [AllowAnonymous]
         public ActionResult LogIn()
         {
             return View();
         }
 
+        public ActionResult LogOut()
+        {
+            FormsAuthentication.SignOut();
+            Session.Abandon();
+            return RedirectToAction("LogIn");
+        }
+
         [HttpPost]
+        [AllowAnonymous]
         public ActionResult LogIn(string user, string password)
         {
             var tempUser = _db.Users.FirstOrDefault(x => x.Name == user && x.Password == password);
@@ -67,12 +70,14 @@ namespace WebLoggR.Controllers
             return View("Login");
         }
 
+        [AllowAnonymous]
         public ActionResult SignUp()
         {
             return View();
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public ActionResult SignUp(string user, string password, string company)
         {
 

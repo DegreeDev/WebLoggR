@@ -13,10 +13,10 @@ namespace WebLoggR.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class GreenRDb : DbContext
+    public partial class Entities : DbContext
     {
-        public GreenRDb()
-            : base("name=GreenRDb")
+        public Entities()
+            : base("name=Entities")
         {
         }
     
