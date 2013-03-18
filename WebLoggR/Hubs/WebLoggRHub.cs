@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
+using NHibernate;
 using WebLoggR.Code;
 using WebLoggR.Models;
 
@@ -64,18 +65,23 @@ namespace WebLoggR.Hubs
                 message = e.Message;
                 message += e.StackTrace;
             }
+            using (ISession session = NHibernateHelper.Session.OpenSession())
+            {
+                NHibernateHelper.ExecuteTransaction(session, () =>
+                {
+                    LogMessage lm = new LogMessage()
+                    {
+                        Id = Guid.NewGuid(),
+                        ApiKey = apiKey,
+                        LogLevel = logLevel,
+                        Message = message,
+                        Time = DateTime.UtcNow,
+                        Title = title
+                    };
 
-
-            var m1 = MessageManager.Manager;
-            var m2 = MessageManager.Manager;
-
-            var test = m1 == m2; 
-
-            LogMessage logMessage = MessageManager.Manager.Persist(apiKey, logLevel, title, message, DateTime.UtcNow);
-
-
-
-            await Clients.Group(app.Account.ToString()).log(logMessage);
+                    session.Save(lm);
+                });
+            }
         }
     }
 }

@@ -40,6 +40,9 @@
             </ul>
             <!-- ko foreach: applications -->
             <div data-bind="attr: { id: id }">
+                <!-- ko if: messages().length == 0 --> 
+                    <div><p>No Recent Messages!</p></div>
+                <!-- /ko --> 
                 <!-- ko foreach: messages -->
                 <div class="well well-small">
                     <div class="row-fluid">
