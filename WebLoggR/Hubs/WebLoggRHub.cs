@@ -30,6 +30,36 @@ namespace WebLoggR.Hubs
             await base.OnConnected();
         }
 
+        public async Task GetPersistedMessages(Guid accountId)
+        {
+            List<LogMessage> messagesToSend = new List<LogMessage>();
+
+            foreach (var app in _db.Applications.Where(x => x.Account == accountId))
+            {
+                try
+                {
+                    //add the messages stored on the server to the specific app
+                    using (var session = NHibernateHelper.Session.OpenSession())
+                    {
+                        NHibernateHelper.ExecuteTransaction(session, () =>
+                        {
+
+                            messagesToSend.AddRange(session
+                                    .CreateQuery("from LogMessage log where log.ApiKey = :apiKey")
+                                    .SetParameter("apiKey", app.ApiKey)
+                                    .List<LogMessage>());
+                        });
+                    }
+                }
+                catch (Exception e)
+                { }
+            }
+            foreach (var message in messagesToSend)
+            {
+                await Clients.Group(accountId.ToString()).log(message);
+            }
+        }
+
         public async Task JoinGroup(Guid accountId)
         {
             List<Application> applications = _db.Applications.Where(x => x.Account == accountId).ToList();
@@ -45,6 +75,7 @@ namespace WebLoggR.Hubs
             await Clients.Caller.addApplication(data);
 
 
+            //add the connection to the account group
             await Groups.Add(Context.ConnectionId, accountId.ToString());
         }
 
@@ -65,22 +96,25 @@ namespace WebLoggR.Hubs
                 message = e.Message;
                 message += e.StackTrace;
             }
+
+            //build message
+            LogMessage lm = new LogMessage()
+            {
+                Id = Guid.NewGuid(),
+                ApiKey = apiKey,
+                LogLevel = logLevel,
+                Message = message,
+                Time = DateTime.UtcNow,
+                Title = title
+            };
+
+            //send message to client
+            await Clients.Group(app.Account.ToString()).log(lm);
+
+            //save message
             using (ISession session = NHibernateHelper.Session.OpenSession())
             {
-                NHibernateHelper.ExecuteTransaction(session, () =>
-                {
-                    LogMessage lm = new LogMessage()
-                    {
-                        Id = Guid.NewGuid(),
-                        ApiKey = apiKey,
-                        LogLevel = logLevel,
-                        Message = message,
-                        Time = DateTime.UtcNow,
-                        Title = title
-                    };
-
-                    session.Save(lm);
-                });
+                NHibernateHelper.ExecuteTransaction(session, () => session.Save(lm));
             }
         }
     }

@@ -104,8 +104,10 @@
             console.log(app.messages());
         };
         $.connection.hub.start().done(function () {
-            self.hub.server.joinGroup("@ViewBag.AccountId.ToString()");
+            self.hub.server.joinGroup("@ViewBag.AccountId.ToString()").done(function () {
+                self.hub.server.getPersistedMessages("@ViewBag.AccountId.ToString()");
             });
+        });
 
             self.logIt = function () {
                 self.hub.server.serverLog(self.apiKey(), self.logLevel(), self.title(), self.message());

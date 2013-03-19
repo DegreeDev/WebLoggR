@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using WebLoggR.Filters;
 using WebLoggR.Models;
 
 namespace WebLoggR.Controllers
 {
+    [RequireSession]
     public class AppsController : Controller
     {
         private Entities _db;

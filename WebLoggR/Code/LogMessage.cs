@@ -53,22 +53,61 @@ namespace WebLoggR.Code
                     .Database(
                         MsSqlConfiguration.MsSql2008
                             .ConnectionString(
-                                @"Server=tcp:l92bw1uhe4.database.windows.net,1433;Database=GreenRDb;User ID=degree@l92bw1uhe4;Password=Nfalk1988;Trusted_Connection=False;Encrypt=True;Connection Timeout=30;"
+                                @"Server=tcp:l92bw1uhe4.database.windows.net,1433;Database=GreenRDb;User ID=degree@l92bw1uhe4;" +
+                                @"Password=Nfalk1988;Trusted_Connection=False;Encrypt=True;Connection Timeout=30;"
                             )
                             .Driver<SqlAzureClientDriver>()
                     )
                     .Mappings(m =>
                         m.FluentMappings.Add<LogMessage>()
                     )
-                    .ExposeConfiguration(BuildSchema)
+                    
+                    //.ExposeConfiguration(BuildSchema)
                     .BuildSessionFactory();
 
             private static void BuildSchema(NHibernate.Cfg.Configuration config)
             {
-                new SchemaExport(config).Create(false, true);
+                try
+                {
+                    new SchemaExport(config).Create(false, true);
+                }
+                catch (Exception e)
+                {
+
+                }
             }
             static Nested() { }
         }
 
+        //internal static ISessionFactory CreateSessionFactory()
+        //{
+        //    ISessionFactory factory = Fluently.Configure()
+        //            .Database(
+        //                MsSqlConfiguration.MsSql2008
+        //                    .ConnectionString(
+        //                        @"Server=tcp:l92bw1uhe4.database.windows.net,1433;Database=GreenRDb;User ID=degree@l92bw1uhe4;" +
+        //                        @"Password=Nfalk1988;Trusted_Connection=False;Encrypt=True;Connection Timeout=30;"
+        //                    )
+        //                    .Driver<SqlAzureClientDriver>()
+        //            )
+        //            .Mappings(m =>
+        //                m.FluentMappings.Add<LogMessageMap>()
+        //            )
+        //            //.ExposeConfiguration(BuildSchema)
+        //            .BuildSessionFactory();
+
+        //    return factory; 
+        //}
+        //private static void BuildSchema(NHibernate.Cfg.Configuration config)
+        //{
+        //    try
+        //    {
+        //        new SchemaExport(config).Create(false, true);
+        //    }
+        //    catch (Exception e)
+        //    {
+
+        //    }
+        //}
     }
 }
