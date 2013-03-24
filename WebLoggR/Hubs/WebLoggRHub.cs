@@ -43,7 +43,6 @@ namespace WebLoggR.Hubs
                     {
                         NHibernateHelper.ExecuteTransaction(session, () =>
                         {
-
                             messagesToSend.AddRange(session
                                     .CreateQuery("from LogMessage log where log.ApiKey = :apiKey")
                                     .SetParameter("apiKey", app.ApiKey)
