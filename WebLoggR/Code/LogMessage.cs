@@ -5,18 +5,19 @@ using FluentNHibernate.Mapping;
 using NHibernate;
 using NHibernate.SqlAzure;
 using NHibernate.Tool.hbm2ddl;
+using WebLoggR.Models;
 
 namespace WebLoggR.Code
 {
-    public class LogMessage
-    {
-        public virtual Guid Id { get; set; }
-        public virtual Guid ApiKey { get; set; }
-        public virtual string LogLevel { get; set; }
-        public virtual string Message { get; set; }
-        public virtual string Title { get; set; }
-        public virtual DateTime Time { get; set; }
-    }
+    //public partial class LogMessage
+    //{
+    //    public virtual Guid Id { get; set; }
+    //    public virtual Guid ApiKey { get; set; }
+    //    public virtual string LogLevel { get; set; }
+    //    public virtual string Message { get; set; }
+    //    public virtual string Title { get; set; }
+    //    public virtual DateTime Time { get; set; }
+    //}
 
     public class LogMessageMap : ClassMap<LogMessage>
     {

@@ -10,6 +10,7 @@
         <EntityTypeShape EntityType="GreenRDbModel.User" Width="1.5" PointX="3" PointY="4.375" IsExpanded="true" />
         <AssociationConnector Association="GreenRDbModel.FK_Application_0" ManuallyRouted="false" />
         <AssociationConnector Association="GreenRDbModel.FK_Users_0" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="GreenRDbModel.LogMessage" Width="1.5" PointX="6.25" PointY="1.375" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

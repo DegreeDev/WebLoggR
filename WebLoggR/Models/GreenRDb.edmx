@@ -4,10 +4,11 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="GreenRDbModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="GreenRDbModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityContainer Name="GreenRDbModelStoreContainer">
           <EntitySet Name="Account" EntityType="GreenRDbModel.Store.Account" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Application" EntityType="GreenRDbModel.Store.Application" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="LogMessage" EntityType="GreenRDbModel.Store.LogMessage" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Users" EntityType="GreenRDbModel.Store.Users" store:Type="Tables" Schema="dbo" />
           <AssociationSet Name="FK_Application_0" Association="GreenRDbModel.Store.FK_Application_0">
             <End Role="Account" EntitySet="Account" />
@@ -36,6 +37,17 @@
           <Property Name="Persist" Type="bit" Nullable="false" />
           <Property Name="MaxMessages" Type="int" Nullable="false" />
           <Property Name="LastMessageDateTime" Type="datetime2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LogMessage">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ApiKey" Type="uniqueidentifier" />
+          <Property Name="LogLevel" Type="nvarchar" MaxLength="255" />
+          <Property Name="Message" Type="nvarchar" MaxLength="255" />
+          <Property Name="Title" Type="nvarchar" MaxLength="255" />
+          <Property Name="Time" Type="datetime" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -70,8 +82,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="GreenRDbModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -87,6 +98,7 @@
             <End Role="Account" EntitySet="Accounts" />
             <End Role="Users" EntitySet="Users" />
           </AssociationSet>
+          <EntitySet Name="LogMessages" EntityType="GreenRDbModel.LogMessage" />
         </EntityContainer>
         <EntityType Name="Account">
           <Key>
@@ -144,6 +156,17 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="LogMessage">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Guid" Name="Id" Nullable="false" />
+          <Property Type="Guid" Name="ApiKey" />
+          <Property Type="String" Name="LogLevel" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Message" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Title" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Type="DateTime" Name="Time" Precision="3" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -178,6 +201,18 @@
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="Account" ColumnName="Account" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LogMessages">
+            <EntityTypeMapping TypeName="GreenRDbModel.LogMessage">
+              <MappingFragment StoreEntitySet="LogMessage">
+                <ScalarProperty Name="Time" ColumnName="Time" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="LogLevel" ColumnName="LogLevel" />
+                <ScalarProperty Name="ApiKey" ColumnName="ApiKey" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

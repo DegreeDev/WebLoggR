@@ -38,17 +38,7 @@ namespace WebLoggR.Hubs
             {
                 try
                 {
-                    //add the messages stored on the server to the specific app
-                    using (var session = NHibernateHelper.Session.OpenSession())
-                    {
-                        NHibernateHelper.ExecuteTransaction(session, () =>
-                        {
-                            messagesToSend.AddRange(session
-                                    .CreateQuery("from LogMessage log where log.ApiKey = :apiKey")
-                                    .SetParameter("apiKey", app.ApiKey)
-                                    .List<LogMessage>());
-                        });
-                    }
+                    messagesToSend.AddRange(MessageManager.Manager.FindByApp(app.ApiKey));
                 }
                 catch (Exception e)
                 { }

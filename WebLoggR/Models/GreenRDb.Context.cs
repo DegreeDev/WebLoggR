@@ -28,5 +28,6 @@ namespace WebLoggR.Models
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Application> Applications { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<LogMessage> LogMessages { get; set; }
     }
 }
