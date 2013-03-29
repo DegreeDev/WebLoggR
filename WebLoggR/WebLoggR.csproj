@@ -199,6 +199,7 @@
     <Compile Include="Code\MessageManager.cs" />
     <Compile Include="Controllers\AppsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ControllerHubBase.cs" />
     <Compile Include="Filters\RequireSession.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
